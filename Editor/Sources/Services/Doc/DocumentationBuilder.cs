@@ -421,11 +421,14 @@ namespace UnityEditor.PackageManager.DocumentationTools.UI
             else if (Directory.Exists(packageDocsDot))
                 packageDocs = packageDocsDot;
 
-            var sourceManualFiles = Directory.GetFiles(packageDocs, "*.md", SearchOption.AllDirectories);
 
-            if (Directory.Exists(packageDocs) && sourceManualFiles.Any())
+            if (Directory.Exists(packageDocs))
             {
-                DirectoryCopy(packageDocs, manualSource);
+                var sourceManualFiles = Directory.GetFiles(packageDocs, "*.md", SearchOption.AllDirectories);
+                if (sourceManualFiles.Any())
+                {
+                    DirectoryCopy(packageDocs, manualSource);
+                }
             }
             else
             {

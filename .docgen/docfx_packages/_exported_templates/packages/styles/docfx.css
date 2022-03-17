@@ -187,6 +187,9 @@ header .navbar {
   border-width: 0 0 1px;
   border-radius: 0;
 }
+.navbar-inverse {
+  background-color: #502020;
+}
 .navbar-brand {
   font-size: inherit;
   padding: 0;

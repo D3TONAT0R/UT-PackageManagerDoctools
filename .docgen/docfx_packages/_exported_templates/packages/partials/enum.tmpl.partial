@@ -13,6 +13,7 @@
   <tbody>
   {{#children}}
     <tr>
+      <td>{{_enum_value}}</td>
       <td id="{{id}}">{{name.0.value}}</td>
       <td>{{{summary}}}</td>
     </tr>

@@ -49,7 +49,8 @@
 				"files": [
 					"images/**",
 					"manual/Images/**",
-					"logo.svg",
+					"logo.png",
+					"favicon.png",
 					"rt/tiny_runtime/**"
 				],
 				"exclude": [
@@ -83,7 +84,8 @@
 			"_appTitle": "DEFAULT_APP_TITLE",
             "_packageVersion": "DEFAULT_PACKAGE_VERSION",
 			"_enableSearch": true,
-			"_appLogoPath": "logo.svg",
+			"_appLogoPath": "logo.png",
+			"_appFaviconPath": "favicon.png",
 			"_disableToc": false,
 			"enableTocForManual": true
 		},
