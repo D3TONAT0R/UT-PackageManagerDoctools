@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -563,8 +563,22 @@ namespace UnityEditor.PackageManager.DocumentationTools.UI
             var solutionPrefix = "<Project ToolsVersion=\"4.0\" DefaultTargets=\"FullPublish\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\"><PropertyGroup><DefineConstants>" + docToolsConfig.DefineConstants + "</DefineConstants></PropertyGroup><ItemGroup>";
             var solutionSuffix = "</ItemGroup></Project>";
             var solutionItems = "";
+
+            var docIgnorePath = Path.Combine(packageFolder, ".docignore");
+            List<string> docIgnoreFilters = new List<string>();
+            if(File.Exists(docIgnorePath))
+            {
+                foreach(var line in File.ReadAllLines(docIgnorePath))
+                {
+                    if(!string.IsNullOrWhiteSpace(line)) docIgnoreFilters.Add(line);
+                }
+            }
+
             foreach (string cs in Directory.GetFiles(packageCloneFolder, "*.cs", SearchOption.AllDirectories))
+            {
+                if(IgnoreFile(cs, docIgnoreFilters)) continue;
                 solutionItems += string.Format("<Compile Include=\"{0}\"/>", cs);
+            }
 
             var solution = string.Format("{0}\n{1}\n{2}", solutionPrefix, solutionItems, solutionSuffix);
             File.WriteAllText(Path.Combine(packageCloneFolder, "solution.csproj"), solution);
@@ -586,6 +600,24 @@ namespace UnityEditor.PackageManager.DocumentationTools.UI
                     FileUtil.DeleteFileOrDirectory(buildFolder);
             }
         }
+
+        private static bool IgnoreFile(string file, List<string> ignoreFilters)
+        {
+            if(ignoreFilters == null || ignoreFilters.Count == 0) return false;
+            var fileContent = File.ReadAllText(file);
+            //Get the namespace the csharp file is in
+            var namespaceMatch = Regex.Match(fileContent, @"namespace\s+([^\s]+)");
+            if (namespaceMatch.Success)
+            {
+				var namespaceName = namespaceMatch.Groups[1].Value;
+                foreach(var f in ignoreFilters)
+                {
+                    if(namespaceName.StartsWith(f))
+						return true;
+                }
+			}
+			return false;
+		}
 
         class PackageJsonHelper
         {
